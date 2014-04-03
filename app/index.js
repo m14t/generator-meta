@@ -3,7 +3,7 @@ var util = require('util');
 var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
-
+var exec = require('child_process').exec;
 
 var MetaGenerator = yeoman.generators.Base.extend({
     init: function () {
@@ -14,6 +14,24 @@ var MetaGenerator = yeoman.generators.Base.extend({
                 this.installDependencies();
             }
         });
+    },
+
+    /**
+     * Attempt to get the user's GitHub username if they followed the
+     * instructions on https://github.com/blog/180-local-github-config
+     */
+    getGithubUsername: function () {
+        var done = this.async();
+        var yeomanGlobal = this;
+
+        // Attempt to get the user's github username
+        exec(
+            'git config --global github.user',
+            function(error, stdout, stderr) {
+                yeomanGlobal.githubUser = stdout.replace(/\n$/, '');
+                done();
+            }
+        );
     },
 
     askFor: function () {
