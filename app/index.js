@@ -43,31 +43,47 @@ var MetaGenerator = yeoman.generators.Base.extend({
         // replace it with a short and sweet description of your generator
         this.log(chalk.magenta('You\'re using the fantastic Meta generator.'));
 
-        var prompts = [{
-            type: 'confirm',
-            name: 'someOption',
-            message: 'Would you like to enable this option?',
-            default: true
-        }];
+        var prompts = [
+            {
+                name: 'projectName',
+                message: 'What would you like to call this project?',
+                validate: function (value) {
+                    if ("" == value) {
+                        return "Please specify a projectName";
+                    }
+
+                    return true;
+                }
+            },
+            {
+                name: 'projectDescription',
+                message: 'How would you describe it?'
+            },
+            {
+                name: 'githubUser',
+                message: 'Would you mind telling me your username on GitHub?',
+                default: this.githubUser
+            },
+            {
+                type: 'confirm',
+                name: 'useGrunt',
+                message: 'Would you like to use Grunt on this project?',
+                default: true
+            }
+        ];
 
         this.prompt(prompts, function (props) {
-            this.someOption = props.someOption;
+            // Copy all props to the this object
+            this._.merge(this, props);
 
             done();
         }.bind(this));
     },
 
-    app: function () {
-        this.mkdir('app');
-        this.mkdir('app/templates');
-
-        this.copy('_package.json', 'package.json');
-        this.copy('_bower.json', 'bower.json');
-    },
-
-    projectfiles: function () {
+    configFiles: function () {
         this.copy('editorconfig', '.editorconfig');
         this.copy('jshintrc', '.jshintrc');
+        this.template('_package.json', 'package.json');
     }
 });
 

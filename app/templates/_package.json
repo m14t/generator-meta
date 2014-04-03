@@ -1,5 +1,7 @@
 {
-  "name": "package",
+  "name": "<%= projectName %>",
+  "description": "<%= projectDescription %>",
   "version": "0.0.0",
+  "repository": "<%= githubUser %>/<%= _.slugify(projectName) %>",
   "dependencies": {}
 }
