@@ -89,6 +89,7 @@ var MetaGenerator = yeoman.generators.Base.extend({
     configFiles: function () {
         this.copy('editorconfig', '.editorconfig');
         this.copy('jshintrc', '.jshintrc');
+        this.copy('jshintignore', '.jshintignore');
         this.template('_package.json', 'package.json');
     }
 });
