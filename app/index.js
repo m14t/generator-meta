@@ -76,6 +76,12 @@ var MetaGenerator = yeoman.generators.Base.extend({
             // Copy all props to the this object
             this._.merge(this, props);
 
+            if (true === this.useGrunt) {
+                this.invoke(
+                    'meta:grunt'
+                );
+            }
+
             done();
         }.bind(this));
     },
