@@ -53,11 +53,13 @@ var MetaGenerator = yeoman.generators.Base.extend({
                     }
 
                     return true;
-                }
+                },
+                default: 'boondocking'
             },
             {
                 name: 'projectDescription',
-                message: 'How would you describe it?'
+                message: 'How would you describe it?',
+                default: 'Boondocking is free camping, generally out in the boondocks.'
             },
             {
                 name: 'githubUser',
