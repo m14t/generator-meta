@@ -61,6 +61,7 @@ var SilexGenerator = yeoman.generators.Base.extend({
     configureServices: function () {
         var done = this.async();
         var basePackages = [
+            'igorw/config-service-provider:1.2.*',
             'silex/silex:1.2.*'
         ];
 
