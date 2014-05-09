@@ -84,6 +84,10 @@ var MetaGenerator = yeoman.generators.Base.extend({
         this.prompt(prompts, function (props) {
             var yo = this;
 
+            // Create project namespace variable
+            props.projectNamespace = props.projectName.charAt(0).toUpperCase() +
+                props.projectName.substring(1);
+
             // Copy all props to the this object
             this._.merge(this, props);
 
@@ -96,6 +100,7 @@ var MetaGenerator = yeoman.generators.Base.extend({
             switch (this.projectType) {
                 case 'silex':
                     yo.invoke('meta:composer', {options: props}, function() {
+                        yo.invoke('meta:silex', {options: props});
                     });
                     break;
             }
