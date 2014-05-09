@@ -69,10 +69,21 @@ var MetaGenerator = yeoman.generators.Base.extend({
                 name: 'useGrunt',
                 message: 'Would you like to use Grunt on this project?',
                 default: true
+            },
+            {
+                type: 'list',
+                name: 'projectType',
+                message: 'Would type of project is this going to be?',
+                choices: [
+                    'silex'
+                ],
+                default: 0
             }
         ];
 
         this.prompt(prompts, function (props) {
+            var yo = this;
+
             // Copy all props to the this object
             this._.merge(this, props);
 
@@ -80,6 +91,13 @@ var MetaGenerator = yeoman.generators.Base.extend({
                 this.invoke(
                     'meta:grunt'
                 );
+            }
+
+            switch (this.projectType) {
+                case 'silex':
+                    yo.invoke('meta:composer', {options: props}, function() {
+                    });
+                    break;
             }
 
             done();
