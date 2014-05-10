@@ -1,6 +1,18 @@
 'use strict';
 var composer = require('../lib/composer.js');
 var yeoman = require('yeoman-generator');
+var availableServices = {
+    "Twig": {
+        composerVersion: 'twig/twig:>=1.8,<2.0-dev',
+        classname: "\\Silex\\Provider\\TwigServiceProvider",
+        defaultConfig: {
+            values: {
+                "twig.path": "%__DIR__%/Resources/views"
+            }
+        },
+        checked: true
+    }
+};
 
 function augmentJsonFile(file, data) {
     var current = JSON.parse(this.readFileAsString(file));
@@ -60,18 +72,67 @@ var SilexGenerator = yeoman.generators.Base.extend({
 
     configureServices: function () {
         var done = this.async();
+        var yo = this;
         var basePackages = [
             'igorw/config-service-provider:1.2.*',
             'silex/silex:1.2.*'
         ];
-
-        //-- Composer install the required packages
-        composerRequire(
-            basePackages,
-            function (error, stdout, stderr) {
-                done();
+        var prompts = [
+            {
+                type: "checkbox",
+                name: 'enabledServiceNames',
+                message: 'What services would you like to enable in Silex?',
+                choices: Object.keys(availableServices).map(function (v) {
+                    return {
+                        name: v,
+                        checked: availableServices[v].checked
+                    };
+                })
             }
-        );
+        ];
+
+        this.prompt(prompts, function (props) {
+            var enabledServices = yo._.filter(
+                availableServices,
+                function (value, key) {
+                    //-- Filter out the just the enabled services
+                    return -1 !== props.enabledServiceNames.indexOf(key);
+                }
+            );
+            var enabledComposerPackages = enabledServices.map(function (config) {
+                //-- We just need the composerVersion
+                return config.composerVersion;
+            });
+            enabledComposerPackages = yo._.filter(enabledComposerPackages, function (value) {
+                return "undefined" !== typeof value;
+            });
+            var enabledConfigOptions = {};
+
+            //-- Composer install the required packages
+            composerRequire(
+                basePackages.concat(enabledComposerPackages),
+                function (error, stdout, stderr) {
+                    done();
+                }
+            );
+
+            //-- Add the configs to our config file
+            yo._.forEach(enabledServices, function (config) {
+                enabledConfigOptions[config.classname] = config.defaultConfig;
+            });
+            augmentJsonFile.call(
+                yo,
+                'app/config/config.json',
+                {
+                    "services": enabledConfigOptions
+                }
+            );
+
+            //-- Copy Service specific files into place
+            yo._.forEach(props.enabledServiceNames, function (serviceName) {
+                yo.directory('_serviceFiles/' + serviceName, '.');
+            });
+        });
     }
 
 });
