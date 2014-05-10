@@ -2,6 +2,11 @@
 var composer = require('../lib/composer.js');
 var yeoman = require('yeoman-generator');
 var availableServices = {
+    "ServiceController": {
+        classname: "\\Silex\\Provider\\ServiceControllerServiceProvider",
+        defaultConfig: {},
+        checked: true
+    },
     "Twig": {
         composerVersion: 'twig/twig:>=1.8,<2.0-dev',
         classname: "\\Silex\\Provider\\TwigServiceProvider",
@@ -15,6 +20,16 @@ var availableServices = {
     "UrlGenerator": {
         classname: "\\Silex\\Provider\\UrlGeneratorServiceProvider",
         defaultConfig: {},
+        checked: true
+    },
+    "WebProfiler": {
+        composerVersion: 'silex/web-profiler:~1.0',
+        classname: "\\Silex\\Provider\\WebProfilerServiceProvider",
+        defaultConfig: {
+            values: {
+                "profiler.cache_dir": "%__DIR__%/../cache/profiler"
+            }
+        },
         checked: true
     }
 };
