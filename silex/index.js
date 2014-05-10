@@ -11,6 +11,11 @@ var availableServices = {
             }
         },
         checked: true
+    },
+    "UrlGenerator": {
+        classname: "\\Silex\\Provider\\UrlGeneratorServiceProvider",
+        defaultConfig: {},
+        checked: true
     }
 };
 
